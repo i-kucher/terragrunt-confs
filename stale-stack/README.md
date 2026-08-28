@@ -16,12 +16,10 @@ Tested with terragrunt 1.0.0 / OpenTofu 1.9.0. Applies to terragrunt >= 0.79.
 
 ```console
 $ terragrunt stack generate --non-interactive
-
 INFO   Generating unit db from ./terragrunt.stack.hcl
 INFO   Generating unit vpc from ./terragrunt.stack.hcl
 
 $ ls .terragrunt-stack/
-
 app  db  vpc
 ```
 
@@ -29,7 +27,6 @@ app  db  vpc
 
 ```console
 $ terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep 'Unit'
-
 - Unit .terragrunt-stack/app
 - Unit .terragrunt-stack/db
 - Unit .terragrunt-stack/vpc
@@ -41,7 +38,6 @@ $ terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep
 
 ```console
 $ terragrunt run --all apply --out-dir=$(pwd)/plans --non-interactive 2>&1 \ | grep -E '^- Unit|app|Succeeded|Failed'
-
 INFO   Unit queue will be processed for apply in this order:
 - Unit .terragrunt-stack/app
 - Unit .terragrunt-stack/db
@@ -68,15 +64,13 @@ STDOUT [.terragrunt-stack/app] tofu: name = "app"
 
 ## Fix
 ```console
-$ rm -rf .terragrunt-stack                                                                                                                                                                                  ✔ │ system 
+$ rm -rf .terragrunt-stack
 
-$ terragrunt stack generate                                                                                                                                                                              ✔ │ system 
-
+$ terragrunt stack generate
 INFO   Generating unit db from ./terragrunt.stack.hcl
 INFO   Generating unit vpc from ./terragrunt.stack.hcl
 
-$ ls .terragrunt-stack                                                                                                                                                                                   ✔ │ system 
-
+$ ls .terragrunt-stack
 db  vpc
 ```
 ## Cleanup
