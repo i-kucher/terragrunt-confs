@@ -26,8 +26,10 @@ terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep '
 
 # 4. ...apply on runner 2 re-checks-out the repo: the committed stale tree is back
 git checkout .terragrunt-stack
-terragrunt run --all apply --out-dir=$(pwd)/plans --non-interactive
-# -> app re-enters the queue, has no planfile:
+terragrunt run --all apply --out-dir=$(pwd)/plans --non-interactive 2>&1 \
+  | grep -E '^- Unit|app|Succeeded|Failed'
+# -> app re-enters the queue and is executed, but has no planfile:
+#      - Unit .terragrunt-stack/app
 #      Failed to load .../plans/.terragrunt-stack/app/tfplan.tfplan: no such file
 #      Run Summary  Succeeded 4  Failed 1     <- partial application
 ```
