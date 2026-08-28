@@ -13,7 +13,6 @@ Tested with terragrunt 1.0.0 / OpenTofu 1.9.0. Applies to terragrunt >= 0.79.
 ## Reproduce
 
 1. Generate. The log mentions only db and vpc, app stays on disk:
-
 ```console
 $ terragrunt stack generate --non-interactive
 INFO   Generating unit db from ./terragrunt.stack.hcl
@@ -24,7 +23,6 @@ app  db  vpc
 ```
 
 2. Plan. The removed unit is in the queue:
-
 ```console
 $ terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep 'Unit'
 - Unit .terragrunt-stack/app
@@ -35,7 +33,6 @@ $ terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep
 ```
 
 3. Apply. The app unit applied:
-
 ```console
 $ terragrunt run --all apply --out-dir=$(pwd)/plans --non-interactive 2>&1 \ | grep -E '^- Unit|app|Succeeded|Failed'
 INFO   Unit queue will be processed for apply in this order:
@@ -70,7 +67,7 @@ $ terragrunt stack generate
 INFO   Generating unit db from ./terragrunt.stack.hcl
 INFO   Generating unit vpc from ./terragrunt.stack.hcl
 
-$ ls .terragrunt-stack
+$ ls .terragrunt-stack/
 db  vpc
 ```
 ## Cleanup
