@@ -7,22 +7,29 @@ removed from `terragrunt.stack.hcl` but its generated dir survived.
 
 Tested: terragrunt 1.0.0 / OpenTofu 1.9.0 (applies to any tg >= 0.79).
 
-## The problem
+## Reproduce
 
 ```bash
+# 1. generation keeps the stale unit
 terragrunt stack generate --non-interactive
-ls .terragrunt-stack/     # app db vpc — stale 'app' survives regeneration
+ls .terragrunt-stack/
+# -> app db vpc         ('app' survives; the log mentions only db, vpc)
 
-terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive
-# queue includes .terragrunt-stack/app — a unit no declaration mentions
-```
+# 2. the phantom unit gets planned
+terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep '^- Unit'
+# -> - Unit .terragrunt-stack/app   <- present in the queue, no declaration mentions it
 
-In split plan/apply pipelines (apply re-checks-out the repo, planfiles cover
-only the declared units) the stale unit hard-errors at apply:
+# 3. split plan/apply pipeline: clean plan on runner 1...
+rm -rf .terragrunt-stack plans
+terragrunt run --all plan --out-dir=$(pwd)/plans --non-interactive 2>&1 | grep '^- Unit'
+# -> only db, vpc (+ units/*); planfiles exist for exactly these
 
-```
-Failed to load .../plans/.terragrunt-stack/app/tfplan.tfplan: no such file
-Run Summary  Succeeded N-1  Failed 1     <- partial application
+# 4. ...apply on runner 2 re-checks-out the repo: the committed stale tree is back
+git checkout .terragrunt-stack
+terragrunt run --all apply --out-dir=$(pwd)/plans --non-interactive
+# -> app re-enters the queue, has no planfile:
+#      Failed to load .../plans/.terragrunt-stack/app/tfplan.tfplan: no such file
+#      Run Summary  Succeeded 4  Failed 1     <- partial application
 ```
 
 ## The fix
@@ -33,6 +40,8 @@ apply side. Generation recreates the declared units; planfile paths still match.
 ## Cleanup
 
 ```bash
-find . -name ".terragrunt-cache" -type d -prune -exec rm -rf {} + ; rm -rf plans
-git checkout .terragrunt-stack   # if an experiment removed the fixture tree
+find . -name ".terragrunt-cache" -type d -prune -exec rm -rf {} +
+find . -name "*.tfstate*" -delete
+rm -rf plans
+git checkout .terragrunt-stack
 ```
