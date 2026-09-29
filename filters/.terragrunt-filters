@@ -1,2 +1,4 @@
-./app
-./vpc
+# keep db only
+
+./db
+
