@@ -1,0 +1,2 @@
+# scenario 1: keep only app after vpc/db/app were applied
+./app
