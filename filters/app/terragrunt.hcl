@@ -8,5 +8,6 @@ dependency "vpc" {
 }
 
 inputs = {
-  vpc_name = dependency.vpc.outputs.name
+  vpc_name            = dependency.vpc.outputs.name
+  path_from_repo_root = get_path_from_repo_root()
 }
