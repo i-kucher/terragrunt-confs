@@ -10,7 +10,7 @@ terraform {
 }
 
 resource "terraform_data" "this" {
-  input = "app"
+  input = "app-v2"
 }
 
 output "name" {
