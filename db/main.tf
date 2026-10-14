@@ -4,7 +4,7 @@ terraform {
     organization = "env-v0peqqittktdl3vsq"
 
     workspaces {
-      name = "r2st-a1-db"
+      name = "r3st-db"
     }
   }
 }
