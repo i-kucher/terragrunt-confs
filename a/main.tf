@@ -2,7 +2,7 @@ variable "repo_root" { type = string }
 variable "path_from_root" { type = string }
 
 resource "terraform_data" "unit" {
-  input = "a-v1"
+  input = "a-v2"
 }
 
 output "repo_root" { value = var.repo_root }
